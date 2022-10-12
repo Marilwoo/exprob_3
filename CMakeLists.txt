@@ -62,13 +62,13 @@ find_package(catkin REQUIRED COMPONENTS
 # add_message_files(
 #   FILES
 #   Message1.msg
-#   Message2.msg
 # )
 
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
    Marker.srv
+   Hints.srv
  )
 
 ## Generate actions in the 'action' folder
@@ -177,6 +177,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
    scripts/controller.py
+   scripts/hint_manager.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

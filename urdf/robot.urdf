@@ -19,6 +19,12 @@
   <gazebo reference="arm_link_01">
     <material>Gazebo/Grey</material>
   </gazebo>
+  <gazebo reference="camera_link">
+    <material>Gazebo/Green</material>
+  </gazebo>
+  <gazebo reference="camera2_link">
+    <material>Gazebo/Green</material>
+  </gazebo>
   <!--gazebo reference="arm_link_02">
     <material>Gazebo/Grey</material>
   </gazebo-->
@@ -101,8 +107,8 @@
           <format>R8G8B8</format>
         </image>
         <clip>
-          <near>0.02</near>
-          <far>300</far>
+          <near>0.0001</near>
+          <far>1000</far>
         </clip>
         <noise>
           <type>gaussian</type>
@@ -126,6 +132,7 @@
       </plugin>
     </sensor>
   </gazebo>
+  
   <material name="black">
     <color rgba="0.0 0.0 0.0 1.0"/>
   </material>
@@ -318,7 +325,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.3"/>
       <geometry>
-        <cylinder length="0.8" radius="0.04"/>
+        <cylinder length="0.7" radius="0.04"/>
       </geometry>
       <material name="red"/>
     </visual>
@@ -356,13 +363,13 @@
   
   <link name="camera_link">
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0.025"/>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
       <geometry>
         <box size="0.05 0.05 0.05"/>
       </geometry>
     </collision>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0.025"/>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
       <geometry>
         <box size="0.05 0.05 0.05"/>
       </geometry>
@@ -379,10 +386,10 @@
   
   <joint name="camera_joint" type="fixed">
     <axis xyz="0 1 0"/>
-    <origin rpy="0 0 0" xyz="0.05 0 0.7"/>
+    <origin rpy="0 0.436332 0" xyz="0.05 0 0.7"/>
     <parent link="arm_link_01"/>
     <child link="camera_link"/>
   </joint>
- 
+  
 </robot>
 

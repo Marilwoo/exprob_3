@@ -36,6 +36,7 @@
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
+#include <std_msgs/Int32.h>
 
 class ArucoMarkerPublisher
 {
@@ -58,7 +59,9 @@ private:
   image_transport::Publisher debug_pub_;
 
   cv::Mat inImage_;
-  
+
+  ros::Publisher id_pub;
+
 public:
   ArucoMarkerPublisher() :
       nh_("~"), it_(nh_), useCamInfo_(true)
@@ -66,6 +69,7 @@ public:
     image_sub_ = it_.subscribe("/image", 1, &ArucoMarkerPublisher::image_callback, this);
     image_pub_ = it_.advertise("result", 1);
     debug_pub_ = it_.advertise("debug", 1);
+    id_pub = nh_.advertise<std_msgs::Int32>("/IDs", 1000);
     
     nh_.param<bool>("use_camera_info", useCamInfo_, false);
     camParam_ = aruco::CameraParameters();
@@ -89,11 +93,15 @@ public:
 
       // ok, let's detect
       mDetector_.detect(inImage_, markers_, camParam_, marker_size_, false);
-
-		std::cout << "The id of the detected marker detected is: ";
+	  std_msgs::Int32 found_id;
+		std::cout << "The id of the detected marker is: ";
         for (std::size_t i = 0; i < markers_.size(); ++i)
         {
           std::cout << markers_.at(i).id << " ";
+          if (markers_.at(i).id){
+          	found_id.data = markers_.at(i).id;
+          	id_pub.publish(found_id);
+          }
         }
         std::cout << std::endl;
 
@@ -135,7 +143,7 @@ public:
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "aruco_marker_publisher");
-
+  
   ArucoMarkerPublisher node;
 
   ros::spin();

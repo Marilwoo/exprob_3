@@ -65,7 +65,9 @@
   <include file="$(find exprob_3)/launch/simulation_gmapping.launch"/>
   <include file="$(find exprob_3)/launch/move_base.launch"/>
 
+
+  <node name="final_oracle" pkg="exprob_3" type="final_oracle" output="screen" />
+  <node name="hint_manager" pkg="exprob_3" type="hint_manager.py" output="screen" />
   <node name="controller" pkg="exprob_3" type="controller.py" output="screen" />
-  
 
 </launch>
