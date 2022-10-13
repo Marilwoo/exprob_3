@@ -103,9 +103,9 @@ def search():
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 	print("In search\n")
 	vel = Twist()	
-	vel.angular.z = 0.7
+	vel.angular.z = 0.35
 	pub.publish(vel)
-	time.sleep(40)
+	time.sleep(45)
 	#vel.angular.z = 0.0
 	#pub.publish(vel)
 	#print("Robot stopped")
@@ -129,13 +129,14 @@ def go_home():
 	
 def check_hypo():
 	global hint_list_client, ids_to_check, state
-	#TODO Controllare ipotesi vincente.
 	print("\nIn check hypo\n")
+	who = ""
+	what = ""
+	where = ""
 	
 	req = HintsRequest()
 	hint_list = hint_list_client(req)
 	
-	#print("Hint list: ", hint_list)
 	hint_0 = hint_list.hint_0
 	hint_1 = hint_list.hint_1
 	hint_2 = hint_list.hint_2
@@ -149,6 +150,80 @@ def check_hypo():
 	print("ID3: ", hint_3, "\n")
 	print("ID4: ", hint_4, "\n")
 	print("ID5: ", hint_5, "\n")
+	
+	to_check = []
+	for i in range(0,6):
+		print("I: ", i )
+		if i == 0:
+			to_check = hint_0
+		elif i == 1:
+			to_check = hint_1
+		elif i == 2:
+			to_check = hint_2
+		elif i == 3:
+			to_check = hint_3
+		elif i == 4:
+			to_check = hint_4
+		elif i == 5:
+			to_check = hint_5
+		print("to_check: ", to_check)
+		if len(to_check) == 3:
+			pos = to_check[0].find(":")
+			key = to_check[0]
+			key = key[0:pos]
+			hint = to_check[0]
+			hint = hint[pos+1:]
+			print("\nkey: ", key, " hint: ", hint, "\n")
+			if key == "who":
+				who = hint
+			elif key == "what":
+				what = hint
+			elif key == "where":
+				where = hint
+			
+			pos2 = to_check[1].find(":")
+			key2 = to_check[1]
+			key2 = key2[0:pos2]
+			hint2 = to_check[1]
+			hint2 = hint2[pos2+1:]
+			print("\nkey2: ", key2, " hint2: ", hint2, "\n")
+			if key2 == "who":
+				who = hint2
+			elif key2 == "what":
+				what = hint2
+			elif key2 == "where":
+				where = hint2
+			
+			pos3 = to_check[2].find(":")
+			key3 = to_check[2]
+			key3 = key3[0:pos3]
+			hint3 = to_check[2]
+			hint3 = hint3[pos3+1:]
+			
+			print("\nkey3: ", key3, " hint3: ", hint3, "\n")
+			
+			if key3 == "who":
+				who = hint3
+			elif key3 == "what":
+				what = hint3
+			elif key3 == "where":
+				where = hint3
+				
+			print("Who: ",who," what: ", what, " where: ",where)
+			
+			if key != key2 and key2 != key3 and key != key3:
+				print("ID",i," has an hypothesis consistent: \nIt was ", who, " with the ", what, " in the " , where)
+				time.sleep(1)
+				print("\nGoing home to check if it is the winning one\n")
+				ids_to_check.append(i)
+				state = 3
+			
+	print("Ids with complete and consistent hypothesis: ", ids_to_check)
+	state = 0	
+			
+			
+			
+"""		
 	
 	if len(hint_0) == 3:
 		pos = hint_0[0].find(":")
@@ -191,8 +266,8 @@ def check_hypo():
 			where = hint3
 		
 		if key != key2 and key2 != key3 and key != key3:
-			print("ID0 has an hypothesis consistent: \n")
-			print("It was ", who, " with the ", what, " in the " , where)
+			print("ID4 has an hypothesis consistent: \nIt was ", who, " with the ", what, " in the " , where)
+			time.sleep(1)
 			print("\nGoing home to check if it is the winning one\n")
 			ids_to_check.append(0)
 			state = 3
@@ -238,8 +313,8 @@ def check_hypo():
 			where = hint3
 			
 		if key != key2 and key2 != key3 and key != key3:
-			print("ID1 has an hypothesis consistent: \n")
-			print("It was ", who, " with the ", what, " in the " , where)
+			print("ID4 has an hypothesis consistent: \nIt was ", who, " with the ", what, " in the " , where)
+			time.sleep(1)
 			print("\nGoing home to check if it is the winning one\n")
 			ids_to_check.append(1)
 			state = 3
@@ -285,8 +360,8 @@ def check_hypo():
 			where = hint3
 			
 		if key != key2 and key2 != key3 and key != key3:
-			print("ID2 has an hypothesis consistent: \n")
-			print("It was ", who, " with the ", what, " in the " , where)
+			print("ID4 has an hypothesis consistent: \nIt was ", who, " with the ", what, " in the " , where)
+			time.sleep(1)
 			print("\nGoing home to check if it is the winning one\n")
 			ids_to_check.append(2)
 			state = 3
@@ -332,8 +407,8 @@ def check_hypo():
 			where = hint3
 			
 		if key != key2 and key2 != key3 and key != key3:
-			print("ID3 has an hypothesis consistent: \n")
-			print("It was ", who, " with the ", what, " in the " , where)
+			print("ID4 has an hypothesis consistent: \nIt was ", who, " with the ", what, " in the " , where)
+			time.sleep(1)
 			print("\nGoing home to check if it is the winning one\n")
 			ids_to_check.append(3)
 			state = 3
@@ -343,7 +418,7 @@ def check_hypo():
 		key = hint_4[0]
 		key = key[0:pos]
 		hint = hint_4[0]
-		hint = hint[pos:]
+		hint = hint[pos+1:]
 		print("\nkey: ", key, " hint: ", hint, "\n")
 		if key == "who":
 			who = hint
@@ -379,8 +454,8 @@ def check_hypo():
 			where = hint3
 			
 		if key != key2 and key2 != key3 and key != key3:
-			print("ID4 has an hypothesis consistent: \n")
-			print("It was ", who, " with the ", what, " in the " , where)
+			print("ID4 has an hypothesis consistent: \nIt was ", who, " with the ", what, " in the " , where)
+			time.sleep(1)
 			print("\nGoing home to check if it is the winning one\n")
 			ids_to_check.append(4)
 			state = 3
@@ -426,13 +501,13 @@ def check_hypo():
 			where = hint3
 			
 		if key != key2 and key2 != key3 and key != key3:
-			print("ID5 has an hypothesis consistent: \n")
-			print("It was ", who, " with the ", what, " in the " , where)
+			print("ID4 has an hypothesis consistent: \nIt was ", who, " with the ", what, " in the " , where)
+			time.sleep(1)
 			print("\nGoing home to check if it is the winning one\n")
 			ids_to_check.append(5)
 			state = 3
-	print("Ids with complete and consistent hypothesis: ", ids_to_check)
-	state = 0
+	"""
+	
 	
 def check_winning():
 	global ids_to_check, state, visited

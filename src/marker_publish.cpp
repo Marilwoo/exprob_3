@@ -43,7 +43,7 @@ class ArucoMarkerPublisher
 private:
   // ArUco stuff
   aruco::MarkerDetector mDetector_;
-  std::vector<aruco::Marker> markers_;
+  // std::vector<aruco::Marker> markers_;
   aruco::CameraParameters camParam_;
 
   // node params
@@ -54,12 +54,12 @@ private:
   ros::NodeHandle nh_;
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
-  //image_transport::Subscriber image2_sub_;
+  image_transport::Subscriber image2_sub_;
 
   image_transport::Publisher image_pub_;
-  image_transport::Publisher debug_pub_;
+  // image_transport::Publisher debug_pub_;
 
-  cv::Mat inImage_;
+  // cv::Mat inImage_;
 
   ros::Publisher id_pub;
 
@@ -68,9 +68,9 @@ public:
       nh_("~"), it_(nh_), useCamInfo_(true)
   {
     image_sub_ = it_.subscribe("/image", 1, &ArucoMarkerPublisher::image_callback, this);
-    //image2_sub_ = it_.subscribe("/image2", 1, &ArucoMarkerPublisher::image_callback, this);
+    image2_sub_ = it_.subscribe("/image2", 1, &ArucoMarkerPublisher::image_callback, this);
     image_pub_ = it_.advertise("result", 1);
-    debug_pub_ = it_.advertise("debug", 1);
+    // debug_pub_ = it_.advertise("debug", 1);
     id_pub = nh_.advertise<std_msgs::Int32>("/IDs", 1000);
     
     nh_.param<bool>("use_camera_info", useCamInfo_, false);
@@ -80,10 +80,13 @@ public:
   void image_callback(const sensor_msgs::ImageConstPtr& msg)
   {
     bool publishImage = image_pub_.getNumSubscribers() > 0;
-    bool publishDebug = debug_pub_.getNumSubscribers() > 0;
+    // bool publishDebug = debug_pub_.getNumSubscribers() > 0;
 
     ros::Time curr_stamp = msg->header.stamp;
     cv_bridge::CvImagePtr cv_ptr;
+	
+	cv::Mat inImage_;
+	std::vector<aruco::Marker> markers_;
     
     try
     {
@@ -124,6 +127,7 @@ public:
       }
 
       // publish image after internal image processing
+	  /*
       if (publishDebug)
       {
         // show also the internal image resulting from the threshold operation
@@ -133,6 +137,7 @@ public:
         debug_msg.image = mDetector_.getThresholdedImage();
         debug_pub_.publish(debug_msg.toImageMsg());
       }
+	  */
 
     }
     catch (cv_bridge::Exception& e)
