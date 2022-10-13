@@ -19,7 +19,7 @@ def ID_list_callback(id_received):
 	
 	req = Marker()
 	
-	if id_received.data not in found_id:
+	if id_received.data not in found_id and id_received.data <= 40 and id_received.data > 5:
 		found_id.append(id_received.data)
 		print("found id: ", found_id)
 		req = id_received.data

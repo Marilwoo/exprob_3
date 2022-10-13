@@ -34,42 +34,48 @@ def odom_clbk(position):
 	
 
 def next_room():
-	global x, y, state, actual_position
+	global x, y, state, actual_position, visited, room
 	print("\nIn next room\n")
 	print("\nVisited: ", visited, "\n")
 	if visited.count(1) == 6:
 		print("All room visited, going home to check the hypotheses\n")
 		state = 3
+	else: 
 	
-	room = random.randint(0,5)
-	while visited[room] == 1 and actual_position == room:
 		room = random.randint(0,5)
-	visited[room] = 1
-	actual_position = room
-	
-	if room == 0:
-		x = -4
-		y = -3
-	elif room == 1:
-		x = -4
-		y = 2	
-	elif room == 2:
-		x = -4
-		y = 7
-	elif room == 3:
-		x = 5
-		y = -7
-	elif room == 4:
-		x = 5
-		y = -3
-	elif room == 5:
-		x = 5
-		y = 1
-	
-	state = 1
+		ready = 0
+		while ready == 0:
+			if visited[room] == 1 or actual_position == room:
+				room = random.randint(0,5)
+			else:
+				ready = 1
+			
+		visited[room] = 1
+		actual_position = room
+		
+		if room == 0:
+			x = -4
+			y = -3
+		elif room == 1:
+			x = -4
+			y = 2	
+		elif room == 2:
+			x = -4
+			y = 7
+		elif room == 3:
+			x = 5
+			y = -7
+		elif room == 4:
+			x = 5
+			y = -4 #-3 però è troppo vicino a un muro
+		elif room == 5:
+			x = 5
+			y = 1
+		
+		state = 1
 
 def move():
-	global pub2, targ, client, x, y, state
+	global pub2, targ, client, x, y, state, visited, room
 	
 	print("\nIn move\n")
 	#room = random.randint(0,5)
@@ -97,9 +103,12 @@ def search():
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 	print("In search\n")
 	vel = Twist()	
-	vel.angular.z = 0.4
+	vel.angular.z = 0.7
 	pub.publish(vel)
-	time.sleep(10)
+	time.sleep(40)
+	#vel.angular.z = 0.0
+	#pub.publish(vel)
+	#print("Robot stopped")
 	check_hypo()
 	
 def go_home():
@@ -119,7 +128,7 @@ def go_home():
 	check_winning()
 	
 def check_hypo():
-	global hint_list_client, ids_to_check
+	global hint_list_client, ids_to_check, state
 	#TODO Controllare ipotesi vincente.
 	print("\nIn check hypo\n")
 	
@@ -143,8 +152,11 @@ def check_hypo():
 	
 	if len(hint_0) == 3:
 		pos = hint_0[0].find(":")
-		key = hint_0[0].substr(0, pos)
-		hint = hint_0[0].substr(pos+1)
+		key = hint_0[0]
+		key = key[0:pos]
+		hint = hint_0[0]
+		hint = hint[pos+1:]
+		print("\nkey: ", key, " hint: ", hint, "\n")
 		if key == "who":
 			who = hint
 		elif key == "what":
@@ -153,8 +165,11 @@ def check_hypo():
 			where = hint
 		
 		pos2 = hint_0[1].find(":")
-		key2 = hint_0[1].substr(0, pos2)
-		hint2 = hint_0[1].substr(pos2+1)
+		key2 = hint_0[1]
+		key2 = key2[0:pos2]
+		hint2 = hint_0[1]
+		hint2 = hint2[pos2+1:]
+		print("\nkey: ", key2, " hint: ", hint2, "\n")
 		if key == "who":
 			who = hint2
 		elif key == "what":
@@ -163,8 +178,11 @@ def check_hypo():
 			where = hint2
 		
 		pos3 = hint_0[2].find(":")
-		key3 = hint_0[2].substr(0, pos3)
-		hint3 = hint_0[2].substr(pos3+1)
+		key3 = hint_0[2]
+		key3 = key3[0:pos3]
+		hint3 = hint_0[2]
+		hint3 = hint3[pos3+1:]
+		print("\nkey: ", key3, " hint: ", hint3, "\n")
 		if key == "who":
 			who = hint3
 		elif key == "what":
@@ -181,8 +199,11 @@ def check_hypo():
 	
 	if len(hint_1) == 3:
 		pos = hint_1[0].find(":")
-		key = hint_1[0].substr(0, pos)
-		hint = hint_1[0].substr(pos+1)
+		key = hint_1[0]
+		key = key[0:pos]
+		hint = hint_1[0]
+		hint = hint[pos+1:]
+		print("\nkey: ", key, " hint: ", hint, "\n")
 		if key == "who":
 			who = hint
 		elif key == "what":
@@ -191,8 +212,11 @@ def check_hypo():
 			where = hint
 		
 		pos2 = hint_1[1].find(":")
-		key2 = hint_1[1].substr(0, pos2)
-		hint2 = hint_1[1].substr(pos2+1)
+		key2 = hint_1[1]
+		key2 = key2[0:pos2]
+		hint2 = hint_1[1]
+		hint2 = hint2[pos2+1:]
+		print("\nkey: ", key2, " hint: ", hint2, "\n")
 		if key == "who":
 			who = hint2
 		elif key == "what":
@@ -201,8 +225,11 @@ def check_hypo():
 			where = hint2
 	
 		pos3 = hint_1[2].find(":")
-		key3 = hint_1[2].substr(0, pos3)
-		hint3 = hint_1[2].substr(pos3+1)
+		key3 = hint_1[2]
+		key3 = key3[0:pos3]
+		hint3 = hint_1[2]
+		hint3 = hint3[pos3+1:]
+		print("\nkey: ", key3, " hint: ", hint3, "\n")
 		if key == "who":
 			who = hint3
 		elif key == "what":
@@ -219,8 +246,11 @@ def check_hypo():
 			
 	if len(hint_2) == 3:
 		pos = hint_2[0].find(":")
-		key = hint_2[0].substr(0, pos)
-		hint = hint_2[0].substr(pos+1)
+		key = hint_2[0]
+		key = key[0:pos]
+		hint = hint_2[0]
+		hint = hint[pos+1:]
+		print("\nkey: ", key, " hint: ", hint, "\n")
 		if key == "who":
 			who = hint
 		elif key == "what":
@@ -229,8 +259,11 @@ def check_hypo():
 			where = hint
 			
 		pos2 = hint_2[1].find(":")
-		key2 = hint_2[1].substr(0, pos2)
-		hint2 = hint_2[1].substr(pos2+1)
+		key2 = hint_2[1]
+		key2 = key2[0:pos2]
+		hint2 = hint_2[1]
+		hint2 = hint2[pos2+1:]
+		print("\nkey: ", key2, " hint: ", hint2, "\n")
 		if key == "who":
 			who = hint2
 		elif key == "what":
@@ -239,8 +272,11 @@ def check_hypo():
 			where = hint2
 			
 		pos3 = hint_2[2].find(":")
-		key3 = hint_2[2].substr(0, pos3)
-		hint3 = hint_2[2].substr(pos3+1)
+		key3 = hint_2[2]
+		key3 = key3[0:pos3]
+		hint3 = hint_2[2]
+		hint3 = hint3[pos3+1:]
+		print("\nkey: ", key3, " hint: ", hint3, "\n")
 		if key == "who":
 			who = hint3
 		elif key == "what":
@@ -257,8 +293,11 @@ def check_hypo():
 						
 	if len(hint_3) == 3:
 		pos = hint_3[0].find(":")
-		key = hint_3[0].substr(0, pos)
-		hint = hint_3[0].substr(pos+1)
+		key = hint_3[0]
+		key = key[0:pos]
+		hint = hint_3[0]
+		hint = hint[pos+1:]
+		print("\nkey: ", key, " hint: ", hint, "\n")
 		if key == "who":
 			who = hint
 		elif key == "what":
@@ -267,8 +306,11 @@ def check_hypo():
 			where = hint
 		
 		pos2 = hint_3[1].find(":")
-		key2 = hint_3[1].substr(0, pos2)
-		hint2 = hint_3[1].substr(pos2+1)
+		key2 = hint_3[1]
+		key2 = key2[0:pos2]
+		hint2 = hint_3[1]
+		hint2 = hint2[pos2+1:]
+		print("\nkey: ", key2, " hint: ", hint2, "\n")
 		if key == "who":
 			who = hint2
 		elif key == "what":
@@ -277,8 +319,11 @@ def check_hypo():
 			where = hint2
 		
 		pos3 = hint_3[2].find(":")
-		key3 = hint_3[2].substr(0, pos3)
-		hint3 = hint_3[2].substr(pos3+1)
+		key3 = hint_3[2]
+		key3 = key3[0:pos3]
+		hint3 = hint_3[2]
+		hint3 = hint3[pos3+1:]
+		print("\nkey: ", key3, " hint: ", hint3, "\n")
 		if key == "who":
 			who = hint3
 		elif key == "what":
@@ -295,8 +340,11 @@ def check_hypo():
 			
 	if len(hint_4) == 3:
 		pos = hint_4[0].find(":")
-		key = hint_4[0].substr(0, pos)
-		hint = hint_4[0].substr(pos+1)
+		key = hint_4[0]
+		key = key[0:pos]
+		hint = hint_4[0]
+		hint = hint[pos:]
+		print("\nkey: ", key, " hint: ", hint, "\n")
 		if key == "who":
 			who = hint
 		elif key == "what":
@@ -305,8 +353,11 @@ def check_hypo():
 			where = hint
 		
 		pos2 = hint_4[1].find(":")
-		key2 = hint_4[1].substr(0, pos2)
-		hint2 = hint_4[1].substr(pos2+1)
+		key2 = hint_4[1]
+		key2 = key2[0:pos2]
+		hint2 = hint_4[1]
+		hint2 = hint2[pos2+1:]
+		print("\nkey: ", key2, " hint: ", hint2, "\n")
 		if key == "who":
 			who = hint2
 		elif key == "what":
@@ -315,8 +366,11 @@ def check_hypo():
 			where = hint2
 		
 		pos3 = hint_4[2].find(":");
-		key3 = hint_4[2].substr(0, pos3);
-		hint3 = hint_4[2].substr(pos3+1);
+		key3 = hint_4[2]
+		key3 = key3[0:pos3]
+		hint3 = hint_4[2]
+		hint3 = hint3[pos3+1:]
+		print("\nkey: ", key3, " hint: ", hint3, "\n")
 		if key == "who":
 			who = hint3
 		elif key == "what":
@@ -333,8 +387,11 @@ def check_hypo():
 			
 	if len(hint_5) == 3:
 		pos = hint_5[0].find(":")
-		key = hint_5[0].substr(0, pos)
-		hint = hint_5[0].substr(pos+1)
+		key = hint_5[0]
+		key = key[0:pos]
+		hint = hint_5[0]
+		hint = hint[pos+1:]
+		print("\nkey: ", key, " hint: ", hint, "\n")
 		if key == "who":
 			who = hint
 		elif key == "what":
@@ -343,8 +400,11 @@ def check_hypo():
 			where = hint
 		
 		pos2 = hint_5[1].find(":")
-		key2 = hint_5[1].substr(0, pos2)
-		hint2 = hint_5[1].substr(pos2+1)
+		key2 = hint_5[1]
+		key2 = key2[0:pos2]
+		hint2 = hint_5[1]
+		hint2 = hint2[pos2+1:]
+		print("\nkey: ", key2, " hint: ", hint2, "\n")
 		if key == "who":
 			who = hint2
 		elif key == "what":
@@ -353,8 +413,11 @@ def check_hypo():
 			where = hint2
 		
 		pos3 = hint_5[2].find(":")
-		key3 = hint_5[2].substr(0, pos3)
-		hint3 = hint_5[2].substr(pos3+1)
+		key3 = hint_5[2]
+		key3 = key3[0:pos3]
+		hint3 = hint_5[2]
+		hint3 = hint3[pos3+1:]
+		print("\nkey: ", key3, " hint: ", hint3, "\n")
 		if key == "who":
 			who = hint3
 		elif key == "what":
@@ -368,11 +431,11 @@ def check_hypo():
 			print("\nGoing home to check if it is the winning one\n")
 			ids_to_check.append(5)
 			state = 3
-	print("Ids to check: ", ids_to_check)
+	print("Ids with complete and consistent hypothesis: ", ids_to_check)
 	state = 0
 	
 def check_winning():
-	global ids_to_check
+	global ids_to_check, state, visited
 	print("In check winning\n")
 	
 	req = OracleRequest()
@@ -380,8 +443,13 @@ def check_winning():
 	
 	if win in ids_to_check:
 		winning_id = ids_to_check[ids_to_check.index(win)]
+		finish = 1
 		print("Winning hypothesis found!\nIt was hypothesis: ID", winning_id, "\nI WON!")
-	finish = 1
+		
+	else:
+		print("\nWinning hypothesis not found. Need to go back searching\n")
+		visited = [0] * 6
+		state = 0
 	
 #def ID_list_callback(id_received):
 #	global found_id

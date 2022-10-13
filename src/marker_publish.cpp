@@ -54,6 +54,7 @@ private:
   ros::NodeHandle nh_;
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
+  //image_transport::Subscriber image2_sub_;
 
   image_transport::Publisher image_pub_;
   image_transport::Publisher debug_pub_;
@@ -67,6 +68,7 @@ public:
       nh_("~"), it_(nh_), useCamInfo_(true)
   {
     image_sub_ = it_.subscribe("/image", 1, &ArucoMarkerPublisher::image_callback, this);
+    //image2_sub_ = it_.subscribe("/image2", 1, &ArucoMarkerPublisher::image_callback, this);
     image_pub_ = it_.advertise("result", 1);
     debug_pub_ = it_.advertise("debug", 1);
     id_pub = nh_.advertise<std_msgs::Int32>("/IDs", 1000);
