@@ -69,5 +69,6 @@
   <node name="final_oracle" pkg="exprob_3" type="final_oracle" output="screen" />
   <node name="hint_manager" pkg="exprob_3" type="hint_manager.py" output="screen" />
   <node name="controller" pkg="exprob_3" type="controller.py" output="screen" />
+  <!--node name="recognition" pkg="exprob_3" type="recognition" args="/image:=/camera1/image_raw /image:=camera2/image_raw2"/-->
 
 </launch>

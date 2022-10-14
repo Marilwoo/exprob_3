@@ -1,5 +1,30 @@
 #! /usr/bin/env python
 
+## @package exprob_3
+#
+# \file hint_manager.py
+# \brief This node is used for managing the hints from the markers.
+#
+# \author Maria Luisa Aiachini
+# \version 1.0
+# \date 14/10/2022
+# 
+# \details
+#
+#  Service: <BR>
+#	/hint_list
+#
+#  Client: <BR>
+#	/oracle_hint	
+#
+#  Subscriber: <BR>
+#	/IDs
+#
+#  Description: <BR>
+#	This node is used to manage the hints received. It receives the IDs from the subscriver /IDs. It then asks for the corresponding via the
+# /oracle_hint service. It checks if the hint is valid and lput it in the corresponding list.
+#
+
 import rospy
 import time
 from std_msgs.msg import Int32
@@ -14,6 +39,10 @@ hint_4 = []
 hint_5 = []
 hint_service = None
 
+##
+# Callback for the /IDs subscriber. It takes the ID, checks if it is valid and then sends is to the /oracle_hint to retreive the corresponding hint.
+# It checks if there are no errors in the hint received to make sure it is valid and finally append it in the corresponding list.
+#
 def ID_list_callback(id_received):
 	global found_id, hint_service, hint_0, hint_1, hint_2, hint_3, hint_4, hint_5
 	
@@ -61,7 +90,9 @@ def ID_list_callback(id_received):
 			#print("ID3: ", hint_3, "\n")
 			#print("ID4: ", hint_4, "\n")
 			#print("ID5: ", hint_5, "\n")
-
+##
+# Function to send the hint list when the /hint_list service is called
+#
 def send_hint_list(req):
 	global hint_0, hint_1, hint_2, hint_3, hint_4, hint_5, hint_list_service
 	print("Sending the hint list")
@@ -75,7 +106,9 @@ def send_hint_list(req):
 
 	return resp
 
-
+##
+# Main function for the "hint_manager" node. It initialises the node, the subscriber, the client and the server.
+#
 def main():
 	global id_sub, hint_service, hint_list_service
 

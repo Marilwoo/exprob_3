@@ -1,12 +1,40 @@
 #! /usr/bin/env python
 
+## @package exprob_3
+#
+# \file controller.py
+# \brief This node is used for controlling the robot's behavior
+#
+# \author Maria Luisa Aiachini
+# \version 1.0
+# \date 14/10/2022
+# 
+# \details
+#
+#  Client: <BR>
+#	/oracle_solution	
+#
+#	/hint_list
+#
+#  Action client: <BR>
+#	/move_base
+#
+#  Publisher: <BR>
+#	/cmd_vel
+#
+#  Description: <BR>
+#	This node is used to control the behavior of the robot through a state machine. The state machine implements 6 states: 
+#chosing randomly the next room to visit, moving towards the room, turning on itself to search for hints, moving towards home, check the hypotheses for completeness and consistency and checking hypotheses for the winning one.
+#
+#
+
 import rospy
 import time
 import random
 import actionlib
 
 
-from nav_msgs.msg import Odometry
+#from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from move_base_msgs.msg import MoveBaseGoal, MoveBaseAction
 from std_msgs.msg import Int32
@@ -15,8 +43,8 @@ from erl2.srv import Oracle, OracleRequest
 
 #pub = None
 pub = None
-pos_x = 0
-pos_y = 0
+#pos_x = 0
+#pos_y = 0
 state = 0
 visited = [0] * 6
 actual_position = 100
@@ -24,15 +52,18 @@ targ = MoveBaseGoal()
 finish = 0
 found_id = []
 hint_list_client = None
+winning = None
 ids_to_check = []
 
 
-def odom_clbk(position):
-	global pos_x, pos_y, state
-	pos_x = position.pose.pose.position.x
-	pos_y = position.pose.pose.position.y
+#def odom_clbk(position):
+#	global pos_x, pos_y, state
+#	pos_x = position.pose.pose.position.x
+#	pos_y = position.pose.pose.position.y
 	
-
+##
+# Function for randomly choose the next room to visit. It also associate the room number to the x and y coordinates.
+#
 def next_room():
 	global x, y, state, actual_position, visited, room
 	print("\nIn next room\n")
@@ -74,6 +105,10 @@ def next_room():
 		
 		state = 1
 
+##
+# Function to make the robot move, it uses move_base action server to give the goal position. It also waits for the result before going
+# to the next state.
+#
 def move():
 	global pub2, targ, client, x, y, state, visited, room
 	
@@ -97,7 +132,10 @@ def move():
 	else:
 		print("Target reached")
 	state = 2
-	
+
+##
+# Function to make the robot turn on itself to search for surrounding hints. It publishes on /cmd_vel topic.
+#
 def search():
 	global state, pub
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
@@ -109,8 +147,13 @@ def search():
 	#vel.angular.z = 0.0
 	#pub.publish(vel)
 	#print("Robot stopped")
-	check_hypo()
+	state = 4
+	#check_hypo()
 	
+##
+# Function to make the robot go towards home. It uses move_base action server and waits for the results before moving to the
+# next state.
+#
 def go_home():
 	global state, targ, client, ids_to_check
 	print("In going home\n")
@@ -125,8 +168,15 @@ def go_home():
 		rospy.signal_shutdown("Action server not available!\n")
 	else:
 		print("Target reached\n")
-	check_winning()
+	#check_winning()
+	state = 5
 	
+##
+# Function to check if one of the hypotheses received are complete and/or consistent.
+# It uses the service /hint_list to ask for the hypotheses. It then implements a for cycle to check them all.
+# If one hypotheses it is found complete and consistent it is appended to the ids_to_check list to check if it is the winning one.
+# This function also uses the key associated to every hint to save the "who", "where", "what" parts of the hint to print it in natural language.
+#
 def check_hypo():
 	global hint_list_client, ids_to_check, state
 	print("\nIn check hypo\n")
@@ -508,16 +558,19 @@ def check_hypo():
 			state = 3
 	"""
 	
-	
+##
+# Function to check if one of the complete and consistent hypotheses found is the winning one.
+# It uses the /oracle_solution service to ask for the winning ID and compares it with the list of suitable hypotheses.
+#
 def check_winning():
-	global ids_to_check, state, visited
+	global ids_to_check, state, visited, winning
 	print("In check winning\n")
 	
 	req = OracleRequest()
 	win = winning(req)
-	
-	if win in ids_to_check:
-		winning_id = ids_to_check[ids_to_check.index(win)]
+	print("Winning number: ", win.ID)
+	if win.ID in ids_to_check:
+		winning_id = ids_to_check[ids_to_check.index(win.ID)]
 		finish = 1
 		print("Winning hypothesis found!\nIt was hypothesis: ID", winning_id, "\nI WON!")
 		
@@ -535,9 +588,12 @@ def check_winning():
 	#else:
 	#	found_id.append(id_received)
 	#print("ID found till now: ", found_id, "\n")
-			
+		
+##
+# Main function for the "controller" node. Here are initialized the clients and action client, as well as implementing the state machine.
+#	
 def main():
-	global pub, client, state, hint_list_client#, id_sub #, pub2
+	global pub, client, state, hint_list_client, winning #, id_sub #, pub2
 
 	rospy.init_node('controller')
 	print("\nCONTROLLER NODE STARTED\n")
@@ -546,14 +602,12 @@ def main():
 	#pub2 = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=1)	
 	client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
 	client.wait_for_server()
-	sub = rospy.Subscriber('/odom', Odometry, odom_clbk)
+#	sub = rospy.Subscriber('/odom', Odometry, odom_clbk)
 #	id_sub = rospy.Subscriber("/IDs", Int32, ID_list_callback)
 	hint_list_client = rospy.ServiceProxy('/hint_list', Hints)
 	winning = rospy.ServiceProxy('/oracle_solution', Oracle)
 	
 	print("state: ", state)
-	
-	#TODO serve service per /oracle_solution per controllare la vincente. Se vincente trovato si vince, se no si ricomincia a cercare
 	
 	while(finish == 0):
 		if state == 0:
@@ -568,6 +622,12 @@ def main():
 		elif state == 3:
 			print("Going home\n")
 			go_home()	
+		elif state == 4:
+			print("Changing state to 4\n")
+			check_hypo()
+		elif state == 5:
+			print("Changing state to 5\n")
+			check_winning()
 		
 	rospy.spin()
 	
