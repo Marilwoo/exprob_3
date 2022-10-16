@@ -2,7 +2,8 @@
 Maria Luisa Aiachini - 4375373
 
 ### General introduction
-This project simulates a simple version of cluedo. The robot is inside a labyrinth made of 6 rooms that have known positions:(-4,-3)(-4,2)(-4,7)(5,-7)(5,-3)(5,1). The robot needs to go inside each room and search for hints. The hints are made by aruco markers: there are 5 markers in each room. The markers can have three different positions: placed at the top of the walls and on the floor vertically or horizontally. Once the robot has found a complete and consistent hypothesis, or it has visited all the rooms it goes to the home position (0,-1) to check if the winning hypothesis is found. If so the game ends; if not it will start again searching.
+AGGIUSTAREEEE
+This project simulates a simple version of cluedo. The robot is inside a labyrinth made of 6 rooms that have known positions:(-4,-3)(-4,2)(-4,7)(5,-7)(5,-3)(5,1). The robot needs to go inside each room and search for hints. The hints are made by aruco markers: there are 5 markers in each room. The markers can have three different positions: placed at the top of the walls and on the floor vertically or horizontally. The robot will go in each room in random order, if it visites all of them without having a complete and consistent hypothesis to check it will start again going in each room, again in random order. Whenever it finds a complete and consistent hypothesis it will go to home position (0,-1) to check if it is the winning one. If so the game ends; if not it will start again searching. 
 
 ### Expected behavior
 The robot once the simulation has started execute the following steps:
@@ -12,7 +13,6 @@ The robot once the simulation has started execute the following steps:
 - Checks if it has any complete and consistent hypothesis
 - If yes goes to home position to check if it is the winning one
 - If not, randomly chooses the next room to visit
-- Once all the rooms are visited once it goes to the center to check the hypotheses
 - If winning hypothesis is found the game ends
 - If not, the behavior starts from the beginning
 
@@ -53,7 +53,7 @@ string value
 	```
 	
 - Ros services in erl2 package:
-	-[Oracle.srv](https://github.com/CarmineD8/erl2/blob/main/srv/Oracle.srv): used by `/oracle_solution`. Used to send the winning ID when requested.
+	- [Oracle.srv](https://github.com/CarmineD8/erl2/blob/main/srv/Oracle.srv): used by `/oracle_solution`. Used to send the winning ID when requested.
 	```
 	---
 	int32 ID

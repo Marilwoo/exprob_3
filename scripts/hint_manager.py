@@ -50,15 +50,13 @@ def ID_list_callback(id_received):
 	
 	if id_received.data not in found_id and id_received.data <= 40 and id_received.data > 5:
 		found_id.append(id_received.data)
-		print("found id: ", found_id)
 		req = id_received.data
-		#print("req: ", req, "\n")
 		
 		hint = hint_service(req)
 		ID = hint.oracle_hint.ID
 		key = hint.oracle_hint.key
 		value = hint.oracle_hint.value
-		print("\nHINT:", "\nID: ", ID, "\nkey :", key, "\nvalue: ", value, "\n")
+		print("\nNew hint found:", "\nID: ", ID, "\nkey :", key, "\nvalue: ", value, "\n")
 		
 		if hint.oracle_hint.key == "" or hint.oracle_hint.key == "when":
 			print("Key error\n")
@@ -70,7 +68,6 @@ def ID_list_callback(id_received):
 			new_hint += key
 			new_hint += ":"
 			new_hint += value
-			print("New_hint: ", new_hint, "\n")
 			if ID == 0:
 				hint_0.append(new_hint)
 			elif ID == 1:
@@ -83,19 +80,12 @@ def ID_list_callback(id_received):
 				hint_4.append(new_hint)
 			elif ID == 5:
 				hint_5.append(new_hint)
-			#print("Hints by now:\n")
-			#print("ID0: ", hint_0, "\n")
-			#print("ID1: ", hint_1, "\n")
-			#print("ID2: ", hint_2, "\n")
-			#print("ID3: ", hint_3, "\n")
-			#print("ID4: ", hint_4, "\n")
-			#print("ID5: ", hint_5, "\n")
+
 ##
 # Function to send the hint list when the /hint_list service is called
 #
 def send_hint_list(req):
 	global hint_0, hint_1, hint_2, hint_3, hint_4, hint_5, hint_list_service
-	print("Sending the hint list")
 	resp = HintsResponse()
 	resp.hint_0 = hint_0
 	resp.hint_1 = hint_1
