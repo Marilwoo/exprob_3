@@ -6,6 +6,7 @@ This project simulates a simple version of cluedo. The robot is inside a labyrin
 
 ### Expected behavior
 ![Temporal](images/Temporal.jpeg)
+
 The robot once the simulation has started execute the following steps:
 - Randomly chooses which room to visit
 - Moves towards that room
