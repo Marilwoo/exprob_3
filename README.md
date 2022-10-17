@@ -2,7 +2,6 @@
 Maria Luisa Aiachini - 4375373
 
 ### General introduction
-AGGIUSTAREEEE
 This project simulates a simple version of cluedo. The robot is inside a labyrinth made of 6 rooms that have known positions:(-4,-3)(-4,2)(-4,7)(5,-7)(5,-3)(5,1). The robot needs to go inside each room and search for hints using two cameras. The hints are made by aruco markers: there are 5 markers in each room. The markers can have three different positions: placed at the top of the walls and on the floor vertically or horizontally. The robot will go in each room in random order, if it visites all of them without having a complete and consistent hypothesis (composed of three hints all with different keys: who, what, where) to check it will start again going in each room, again in random order. Whenever it finds a complete and consistent hypothesis it will go to home position (0,-1) to check if it is the winning one. If so the game ends; if not it will start again searching. 
 
 ### Expected behavior
