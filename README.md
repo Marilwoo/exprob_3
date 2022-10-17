@@ -126,7 +126,7 @@ Here the screenshots of the terminal on different topics:
 - Here the robot has found a complete and consistent hypothesis : ID3, so it will go towards home to verify if it is the winning one. Once at home it will find oput that that is not the winning one and so the search will start again from the point it was intrrupted
 ![NotWinning](images/NotWinning.jpeg)
 - Here the robot has a complete and consistent hypothesis: ID0, it will start going home to check if it is the winning one. It finds oput that the hypothesis is the winning one, so the program ends.
-![Winning](Winning.jpeg)
+![Winning](images/Winning.jpeg)
 
 ### System features
 The system uses move_base algorithm for managing the robot's movement. The path the robot does every time it needs to reach a room is made different by the choise of randomizing the rooms order. In this way it happens that when a room is reached for the second time, this is done with a different path with respect to the first one and this is chosen because, with different path the robot is able to touch different points and rise the possibility to reach new markers.
