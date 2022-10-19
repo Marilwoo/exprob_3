@@ -39,6 +39,7 @@ Inside the projext there are 4 main nodes:
 	- Asks for the winning ID and compares it to the IDs corresponding to complete and consistent hypotheses to check if the winning one has been found
 	
 - [hint_manager.py](https://github.com/Marilwoo/exprob_3/blob/master/scripts/hint_manager.py): this node is the one that receives the IDs from the markers, it is used to check if the hints received are valid or not and to store the valid ones.
+
 	Using `/IDs` publisher:
 	- Receives the IDs the cameras retreive from the Aruco markers
 	
@@ -49,6 +50,7 @@ Inside the projext there are 4 main nodes:
 	- It sends the list of hypotheses retreived
 	
 - [simulation.cpp](https://github.com/Marilwoo/exprob_3/blob/master/src/simulation.cpp): this node was given. It is used to send the hints corresponding to the markers' IDs, also it has the ID of the winning hypothesis.
+
 	Using `/oracle_hint` server:
 	- Sends the hint corresponding to the markers' IDs
 	
