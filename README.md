@@ -24,27 +24,34 @@ The robot once the simulation has started execute the following steps:
 Inside the projext there are 4 main nodes:
 - [controller.py](https://github.com/Marilwoo/exprob_3/blob/master/scripts/controller.py): this node contains the finite state machine that manages the robot's movements and actions. The state machine manages:
 	- Deciding the next room to be visited in a random way
+	
 	Using `/move_base` action client:
 	- Movement towards the rooms
 	- Movement towards home position
+	
 	Using `/cmd_vel` publisher:
 	- Turning on itself to look for hints around the room
+	
 	Using `/hint_list` client:
 	- Retreives the complete list of hints and hypotheses obtained and analyses them to check for complete and consistent hypotheses
+	
 	Using `/oracle_solution` client:
 	- Asks for the winning ID and compares it to the IDs corresponding to complete and consistent hypotheses to check if the winning one has been found
 	
 - [hint_manager.py](https://github.com/Marilwoo/exprob_3/blob/master/scripts/hint_manager.py): this node is the one that receives the IDs from the markers, it is used to check if the hints received are valid or not and to store the valid ones.
 	Using `/IDs` publisher:
 	- Receives the IDs the cameras retreive from the Aruco markers
+	
 	Using `/oracle_hint` client:
 	- Asks for the hint by sending as a request the ID from the marker
+	
 	Using `/hint_list` server:
 	- It sends the list of hypotheses retreived
 	
 - [simulation.cpp](https://github.com/Marilwoo/exprob_3/blob/master/src/simulation.cpp): this node was given. It is used to send the hints corresponding to the markers' IDs, also it has the ID of the winning hypothesis.
 	Using `/oracle_hint` server:
 	- Sends the hint corresponding to the markers' IDs
+	
 	Using `/oracle_solution` server:
 	- Sends the winning ID as an int
 	
