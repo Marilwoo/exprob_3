@@ -58,10 +58,13 @@ Inside the projext there are 4 main nodes:
 	- Sends the winning ID as an int
 	
 - [marker_publish.cpp](https://github.com/Marilwoo/exprob_3/blob/master/src/marker_publish.cpp): The base node can be cloned from [here](https://github.com/CarmineD8/aruco_ros/blob/main/aruco_ros/src/marker_publish.cpp). It is the node that connects to the cameras and makes them able to recolgnise the Aruco markers and read their IDs. The base node has been modified for connecting it to two cameras and to send the IDs read from the markers.
+
 	Using `/image` subscriber:
 	- Reads the IDs from the first camera
+	
 	Using `/image2` subscriber
 	- Reads the IDs from the second camera
+	
 	Using `/IDs` publisher:
 	- Publishes the IDs read from both cameras.
 
